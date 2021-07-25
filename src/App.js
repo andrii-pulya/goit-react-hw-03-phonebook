@@ -1,28 +1,42 @@
-import "./App.css";
+import './App.css'
 
-import React, { Component } from "react";
-import { nanoid } from "nanoid";
+import React, { Component } from 'react'
+import { nanoid } from 'nanoid'
 
-import AddContactForm from "./components/AddContactForm/AddContactForm.jsx";
-import ContactList from "./components/ContactList/ContactList.jsx";
-import { PageWrapper } from "./components/PageWrapper/PageWrapper.styled.jsx";
-import ContactFilter from "./components/ContactFilter/ContactFilter.jsx";
+import AddContactForm from './components/AddContactForm/AddContactForm.jsx'
+import ContactList from './components/ContactList/ContactList.jsx'
+import { PageWrapper } from './components/PageWrapper/PageWrapper.styled.jsx'
+import ContactFilter from './components/ContactFilter/ContactFilter.jsx'
 
 export default class App extends Component {
   state = {
     contacts: [
-      { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
-      { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
-      { id: "id-3", name: "Eden Clements", number: "645-17-79" },
-      { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
-    filter: "",
-  };
+    filter: '',
+  }
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts')
+    const parsedContacts = JSON.parse(contacts)
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts })
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
+    }
+  }
 
   addContact = (name, number) => {
     if (this.state.contacts.find((contact) => contact.name === name)) {
-      alert(`${name} is already in contacts`);
-      return false;
+      alert(`${name} is already in contacts`)
+      return false
     }
     this.setState((prevState) => ({
       contacts: [
@@ -33,28 +47,28 @@ export default class App extends Component {
         },
         ...prevState.contacts,
       ],
-    }));
-  };
+    }))
+  }
 
   deleteContact = (id) => {
     this.setState((prevState) => ({
       contacts: prevState.contacts.filter((contact) => contact.id !== id),
-    }));
-  };
+    }))
+  }
 
   handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     this.setState({
       [name]: value,
-    });
-  };
+    })
+  }
 
   render() {
-    const { contacts, filter } = this.state;
-    const normalizedFilter = filter.toLowerCase();
+    const { contacts, filter } = this.state
+    const normalizedFilter = filter.toLowerCase()
     const rendedContact = contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
+      contact.name.toLowerCase().includes(normalizedFilter),
+    )
 
     return (
       <PageWrapper>
@@ -76,6 +90,6 @@ export default class App extends Component {
           />
         )}
       </PageWrapper>
-    );
+    )
   }
 }
